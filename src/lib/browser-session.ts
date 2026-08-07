@@ -1,5 +1,6 @@
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
 import crypto from 'crypto';
+import { configurePlaywrightEnv } from './playwright-env';
 
 export const PREVIEW_VIEWPORT = { width: 1280, height: 800 } as const;
 
@@ -98,6 +99,7 @@ export async function createBrowserSession(
   const id = crypto.randomUUID();
   let browser: Browser | undefined;
   try {
+    configurePlaywrightEnv();
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({
       viewport: { ...PREVIEW_VIEWPORT },

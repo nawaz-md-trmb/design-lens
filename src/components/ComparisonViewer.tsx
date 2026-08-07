@@ -16,6 +16,7 @@ import { describeRegion, describeReport } from '@/lib/region-insights';
 import RulerAnnotations from '@/components/RulerAnnotations';
 import PixelInspectOverlay from '@/components/PixelInspectOverlay';
 import BlinkCompare from '@/components/BlinkCompare';
+import { reportAssetBase } from '@/lib/report-urls';
 
 interface Props {
   result: ViewportResult;
@@ -127,7 +128,7 @@ function IssueCard({
 }) {
   const s = SEV[region.severity];
   const insight = describeRegion(region, dims);
-  const base = `/reports/${reportId}`;
+  const base = reportAssetBase(reportId);
 
   return (
     <button
@@ -236,7 +237,7 @@ export default function ComparisonViewer({ result, reportId }: Props) {
   const isDragging = useRef(false);
   const imageAreaRef = useRef<HTMLDivElement>(null);
 
-  const base = `/reports/${reportId}`;
+  const base = reportAssetBase(reportId);
   const designSrc = `${base}/${result.designImage}`;
   const actualSrc = `${base}/${result.actualImage}`;
   const diffSrc = `${base}/${result.diffImage}`;

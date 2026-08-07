@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { Report } from '@/lib/types';
 import { buildQaReport, priorityLabel, type QaVerdict, type QaBug } from '@/lib/qa-report';
+import { reportAssetBase } from '@/lib/report-urls';
 import ComparisonViewer from '@/components/ComparisonViewer';
 import IssueScreenHighlight, { BugOverviewMap } from '@/components/IssueScreenHighlight';
 
@@ -281,7 +282,7 @@ export default function QaReportView({ report, activeViewport, onViewportChange 
   const style = VERDICT_STYLES[qa.overallVerdict];
   const VerdictIcon = style.icon;
   const currentResult = report.results[activeViewport];
-  const base = `/reports/${report.id}`;
+  const base = reportAssetBase(report.id);
 
   const viewportBugs = qa.bugs.filter((b) => b.viewport === currentResult?.viewport.name);
   const componentBugs = viewportBugs.filter((b) => b.issueKind === 'component' || b.componentType);

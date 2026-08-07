@@ -1,5 +1,5 @@
 import path from 'path';
-import { mkdir, writeFile, copyFile } from 'fs/promises';
+import { writeFile, copyFile } from 'fs/promises';
 import crypto from 'crypto';
 import { captureScreenshot } from '@/lib/capture';
 import {
@@ -13,6 +13,11 @@ import { readDesignDimensions } from '@/lib/align-design';
 import { analyzeLayoutZones } from '@/lib/layout-zones';
 import { analyzeRegionFixes } from '@/lib/fix-suggestions';
 import { viewportFromDesign } from '@/lib/viewports';
+import {
+  ensureReportDir,
+  persistReportToBlob,
+  writeReportJsonFile,
+} from '@/lib/report-store';
 import type { Report, ViewportResult, DiffRegion } from '@/lib/types';
 
 export type CompareInput = {
@@ -41,8 +46,7 @@ export async function runComparison(
   const slug = viewport.slug;
 
   const reportId = crypto.randomUUID();
-  const reportsDir = path.join(process.cwd(), 'public', 'reports', reportId);
-  await mkdir(reportsDir, { recursive: true });
+  const reportsDir = await ensureReportDir(reportId);
 
   const designOriginalPath = path.join(reportsDir, 'design-original.png');
   await writeFile(designOriginalPath, designBuffer);
@@ -169,7 +173,8 @@ export async function runComparison(
     results,
   };
 
-  await writeFile(path.join(reportsDir, 'report.json'), JSON.stringify(report, null, 2));
+  await writeReportJsonFile(reportId, report);
+  await persistReportToBlob(reportId);
 
   const worstMatch = Math.min(...results.map((r) => 100 - r.mismatchPercentage));
   const passed = worstMatch >= minMatchPercent;

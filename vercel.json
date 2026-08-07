@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "npm install && npx playwright install chromium",
+  "env": {
+    "PLAYWRIGHT_BROWSERS_PATH": "/vercel/.cache/ms-playwright"
+  },
   "functions": {
     "src/app/api/compare/route.ts": {
       "maxDuration": 60

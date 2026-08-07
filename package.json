@@ -6,12 +6,13 @@
     "dev": "node $HOME/.config/dev-ports/run.mjs next dev",
     "dev:next": "node $HOME/.config/dev-ports/run.mjs next dev",
     "build": "next build",
-    "start": "node $HOME/.config/dev-ports/run.mjs next start",
+    "start": "next start -p ${PORT:-3000}",
     "stop": "node $HOME/.config/dev-ports/stop.mjs",
     "setup": "npx playwright install chromium"
   },
   "dependencies": {
     "@octokit/app": "^16.1.2",
+    "@vercel/blob": "^0.27.3",
     "bullmq": "^5.73.0",
     "fflate": "^0.8.2",
     "ioredis": "^5.10.1",

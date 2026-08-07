@@ -1,10 +1,11 @@
-## Render Blueprint — deploys web + worker + Redis in one click.
-## https://render.com/docs/blueprint-spec
+# Render Blueprint — single Docker web service (no Vercel required).
+# https://render.com/docs/blueprint-spec
+#
+# Deploy: Render Dashboard → New → Blueprint → connect this repo.
 
 services:
-  # ── Web service (Next.js) ───────────────────────────────────────────────────
   - type: web
-    name: designlens-web
+    name: designlens
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerCommand: npm run start
@@ -13,74 +14,25 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: NEXT_PUBLIC_APP_URL
-        fromService:
-          type: web
-          name: designlens-web
-          property: url
-        # ↑ Render injects the service's own public URL automatically
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: designlens-redis
-          property: connectionString
-      - key: GITHUB_APP_ID
-        sync: false          # set manually in Render dashboard
-      - key: GITHUB_APP_PRIVATE_KEY
-        sync: false
-      - key: GITHUB_APP_WEBHOOK_SECRET
-        sync: false
-      - key: GITHUB_CLIENT_ID
-        sync: false
-      - key: GITHUB_CLIENT_SECRET
+      - key: PORT
+        value: "3000"
+      - key: FIGMA_ACCESS_TOKEN
         sync: false
       - key: DESIGNLENS_API_KEY
         sync: false
+      - key: JIRA_BASE_URL
+        sync: false
+      - key: JIRA_EMAIL
+        sync: false
+      - key: JIRA_API_TOKEN
+        sync: false
+      - key: ADO_ORG
+        sync: false
+      - key: ADO_PROJECT
+        sync: false
+      - key: ADO_PAT
+        sync: false
     disk:
-      name: reports
-      mountPath: /app/public/reports
+      name: designlens-public
+      mountPath: /app/public
       sizeGB: 5
-    disk:
-      name: ci-runs
-      mountPath: /app/public/ci-runs
-      sizeGB: 1
-
-  # ── Worker service (BullMQ) ─────────────────────────────────────────────────
-  - type: worker
-    name: designlens-worker
-    runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerCommand: npm run worker
-    plan: starter
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_APP_URL
-        fromService:
-          type: web
-          name: designlens-web
-          property: url
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: designlens-redis
-          property: connectionString
-      - key: GITHUB_APP_ID
-        sync: false
-      - key: GITHUB_APP_PRIVATE_KEY
-        sync: false
-      - key: GITHUB_APP_WEBHOOK_SECRET
-        sync: false
-      - key: GITHUB_CLIENT_ID
-        sync: false
-      - key: GITHUB_CLIENT_SECRET
-        sync: false
-      - key: DESIGNLENS_API_KEY
-        sync: false
-
-# ── Redis ───────────────────────────────────────────────────────────────────
-databases:
-  - type: redis
-    name: designlens-redis
-    plan: starter
-    maxmemoryPolicy: noeviction

@@ -1,59 +1,92 @@
-# DesignLens hosting guide
+# DesignLens hosting (Vercel not required)
 
-## Recommended: Railway (Docker)
+## Recommended: Railway
 
-Best for **Playwright browser sessions**, **long compare runs**, and **persistent reports**.
+Best fit for Playwright screenshots, live browser preview, and persistent reports.
 
-1. Push this repo to GitHub
-2. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub**
-3. Railway uses `Dockerfile` + `railway.toml` automatically
-4. Add a **Volume** mounted at `/app/public/reports` (optional but recommended)
-5. Set env vars from `.env.example` as needed
+### Deploy in ~5 minutes
 
-Health check: `GET /api/health`
+1. **Push to GitHub** (if not already):
+
+   ```bash
+   git remote add origin https://github.com/YOUR_ORG/design-lens.git
+   git push -u origin main
+   ```
+
+2. **Railway** → [railway.app/new](https://railway.app/new) → **Deploy from GitHub repo** → select `design-lens`
+
+3. Railway reads `Dockerfile` + `railway.toml` automatically.
+
+4. **Add a volume** (Settings → Volumes):
+   - Mount path: `/app/public`
+   - Keeps report images across restarts
+
+5. **Environment variables** (optional — see `.env.example`):
+   - `FIGMA_ACCESS_TOKEN`
+   - `DESIGNLENS_API_KEY`
+   - Jira / Azure DevOps vars for ticket attach
+
+6. **Generate domain**: Settings → Networking → Generate domain
+
+7. **Verify**: `curl https://YOUR-DOMAIN.up.railway.app/api/health`
 
 ---
 
-## Alternative: Docker / docker-compose
+## Alternative: Render
+
+Uses `render.yaml` in this repo.
+
+1. [render.com](https://render.com) → **New** → **Blueprint**
+2. Connect GitHub repo
+3. Render creates the web service + 5GB disk on `/app/public`
+4. Add secrets in the dashboard (`FIGMA_ACCESS_TOKEN`, etc.)
+
+---
+
+## Local / internal server (Docker)
+
+No third-party hosting — runs entirely on your network:
 
 ```bash
 docker compose up --build
 # → http://localhost:3000
 ```
 
-Reports persist in the `report-data` volume.
+Reports persist in the `report-data` Docker volume.
+
+For production on a VM:
+
+```bash
+docker build -t design-lens .
+docker run -d -p 3000:3000 -v designlens-data:/app/public --name design-lens design-lens
+```
 
 ---
 
-## Vercel (preview / light use)
+## Why not Vercel?
 
-**Production URL:** https://design-lens-rho.vercel.app
+DesignLens needs a **long-running Chromium process**, **multi-minute compares**, and **disk for report images**. Serverless platforms (Vercel, Netlify Functions) are a poor fit. Docker hosts (Railway, Render, Azure Container Apps, internal K8s) are the right model.
 
-Vercel works for the UI and API, but serverless has limits:
+---
 
-| Feature | Vercel | Railway/Docker |
-|--------|--------|----------------|
-| Playwright screenshots | Works (with cache path) | Full support |
-| Live browser preview | Limited (no sticky sessions) | Full support |
-| Report persistence | **Vercel Blob** (required) | Local disk / volume |
-| Compare timeout | 60s max | No practical limit |
+## Azure (Trimble / enterprise)
 
-### Vercel Blob setup (required for reports)
+Same `Dockerfile` works on **Azure Container Apps** or **App Service (Linux container)**:
 
-1. Vercel dashboard → your project → **Storage** → **Create Blob Store**
-2. Connect it to the project (injects `BLOB_READ_WRITE_TOKEN`)
-3. Redeploy
-
-Without Blob, reports are lost after each serverless invocation.
-
-### Redeploy Vercel
-
-```bash
-npx vercel deploy --prod --yes
-```
+- Image: build from `Dockerfile` or GitHub Actions → ACR
+- Mount Azure Files at `/app/public` for report persistence
+- Set env vars from `.env.example`
+- Health probe: `/api/health`
 
 ---
 
 ## Environment variables
 
-See `.env.example` for Figma, CI API key, Jira, and Azure DevOps settings.
+| Variable | Purpose |
+|----------|---------|
+| `FIGMA_ACCESS_TOKEN` | Import frames from Figma URLs |
+| `DESIGNLENS_API_KEY` | CI compare API (`/api/ci/compare`) |
+| `JIRA_*` | Attach reports to Jira tickets |
+| `ADO_*` | Attach reports to Azure DevOps work items |
+
+See `.env.example` for full list.

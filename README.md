@@ -1,23 +1,26 @@
 # DesignLens
 
-Compare UI/UX designs against developer implementations. Find visual discrepancies across viewports.
+Compare UI/UX designs against developer implementations. Find visual discrepancies with component-level reporting.
 
-## Quick Start
+## Quick Start (local)
 
 ```bash
-# Install dependencies
 npm install
-
-# Install browser for screenshots
-npm run setup
-
-# Start dev server (always runs on port 3100)
-npm run dev
+npm run setup          # Playwright Chromium
+npm run dev            # http://localhost:3100
 ```
 
-Open [http://localhost:3100](http://localhost:3100).
+## Deploy (production)
 
-To stop: `npm run stop`. To see all project ports: `node ~/.config/dev-ports/list.mjs`.
+**Do not use Vercel** for this app — it needs Docker + Playwright.
+
+| Platform | Guide |
+|----------|--------|
+| **Railway** (recommended) | [HOSTING.md](./HOSTING.md) |
+| **Render** | `render.yaml` in repo |
+| **Docker / VM** | `docker compose up --build` |
+
+See **[HOSTING.md](./HOSTING.md)** for step-by-step Railway and Render setup.
 
 ## How It Works
 

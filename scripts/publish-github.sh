@@ -1,31 +1,23 @@
 #!/usr/bin/env bash
-# Push design-lens to GitHub, then connect Railway or Render.
+# Push design-lens to a NEW GitHub repo (separate from myrepo or other projects).
 #
 # Usage:
-#   ./scripts/publish-github.sh                    # personal: github.com/YOU/design-lens
-#   ./scripts/publish-github.sh trimble           # org: github.com/trimble/design-lens
-#   GITHUB_HOST=github.trimble.com ./scripts/publish-github.sh trimble-mep
+#   ./scripts/publish-github.sh                    # github.com/nawaz-md-trmb/design-lens
+#   ./scripts/publish-github.sh YOUR_ORG           # github.com/YOUR_ORG/design-lens
+#   GITHUB_HOST=github.trimble.com ./scripts/publish-github.sh trimble
 #
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-ORG="${1:-}"
+ORG="${1:-nawaz-md-trmb}"
 HOST="${GITHUB_HOST:-github.com}"
 REPO_NAME="${GITHUB_REPO:-design-lens}"
 BRANCH="${GITHUB_BRANCH:-main}"
 
-if [[ -n "$ORG" ]]; then
-  REMOTE_URL="https://${HOST}/${ORG}/${REPO_NAME}.git"
-  WEB_URL="https://${HOST}/${ORG}/${REPO_NAME}"
-else
-  echo "No org specified — using personal account."
-  echo "Set your GitHub username:"
-  read -r USERNAME
-  REMOTE_URL="https://${HOST}/${USERNAME}/${REPO_NAME}.git"
-  WEB_URL="https://${HOST}/${USERNAME}/${REPO_NAME}"
-fi
+REMOTE_URL="https://${HOST}/${ORG}/${REPO_NAME}.git"
+WEB_URL="https://${HOST}/${ORG}/${REPO_NAME}"
 
 echo ""
 echo "Target repo: ${WEB_URL}"
@@ -47,11 +39,16 @@ else
 fi
 
 echo ""
-echo "── Create the empty repo on GitHub first (if it doesn't exist) ──"
-echo "  ${WEB_URL}"
-echo "  → New repository → name: ${REPO_NAME} → do NOT add README/gitignore"
+echo "── Create a NEW empty repo on GitHub (do not use myrepo) ──"
+echo "  1. Open: https://${HOST}/new"
+echo "  2. Owner: ${ORG}"
+echo "  3. Repository name: ${REPO_NAME}"
+echo "  4. Leave empty — no README, no .gitignore, no license"
+echo "  5. Create repository"
 echo ""
-read -p "Repo created on GitHub? Press Enter to push…"
+echo "  Repo URL: ${WEB_URL}"
+echo ""
+read -p "Empty repo created? Press Enter to push…"
 
 git push -u origin "$BRANCH"
 

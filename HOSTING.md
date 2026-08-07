@@ -6,7 +6,20 @@ Best fit for Playwright screenshots, live browser preview, and persistent report
 
 ### Deploy in ~5 minutes
 
-1. **Push to GitHub** (if not already):
+1. **Push to GitHub**:
+
+   ```bash
+   # Personal GitHub
+   ./scripts/publish-github.sh
+
+   # Or Trimble / company org (create empty repo on GitHub first)
+   ./scripts/publish-github.sh trimble
+
+   # GitHub Enterprise (e.g. Trimble internal)
+   GITHUB_HOST=github.trimble.com ./scripts/publish-github.sh YOUR_ORG
+   ```
+
+   Manual alternative:
 
    ```bash
    git remote add origin https://github.com/YOUR_ORG/design-lens.git

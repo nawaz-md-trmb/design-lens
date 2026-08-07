@@ -1,0 +1,22 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Only runs when secrets are configured (see RAILWAY.md)
+    if: ${{ secrets.RAILWAY_TOKEN != '' }}
+    container: ghcr.io/railwayapp/cli:5.2.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link --project "${{ secrets.RAILWAY_PROJECT_ID }}" --environment production
+          railway up --service "${{ secrets.RAILWAY_SERVICE_ID }}" --detach

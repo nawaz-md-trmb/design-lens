@@ -1,0 +1,34 @@
+---
+description: Use dedicated dev ports — never default to 3000
+alwaysApply: true
+---
+
+# Dedicated Dev Ports
+
+Every local project has a fixed port in `.dev-port` at the project root. Never start a dev server on port 3000.
+
+## Running a project
+
+1. Check `.dev-port` for this project's port.
+2. Run `npm run dev` (scripts use `~/.config/dev-ports/run.mjs`).
+3. If already running, the script prints the URL and exits — do not hunt for another port.
+4. To stop: `npm run stop`.
+5. To list all projects: `node ~/.config/dev-ports/list.mjs`.
+
+## Port registry
+
+All assignments live in `~/.config/dev-ports/registry.json`. When creating a new project:
+
+1. Pick the next available port from `nextAvailable`.
+2. Add a `.dev-port` file with that number.
+3. Register it in `registry.json`.
+4. Wire `package.json` scripts to `$HOME/.config/dev-ports/run.mjs`.
+
+## Current assignments
+
+| Project | Port |
+|---------|------|
+| design-lens | 3100 |
+| estimation-mep | 3101 |
+| visual-qa-saas | 3102 |
+| myrepo | 3103 |

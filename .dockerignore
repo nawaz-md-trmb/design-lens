@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+
+# Next.js build output (re-built inside the image)
+.next
+out
+
+# Env files — secrets must be injected at runtime via environment variables
+.env
+.env.*
+
+# Development / editor files
+.DS_Store
+*.log
+*.tsbuildinfo
+coverage
+.vscode
+.cursor
+
+# Runtime data — these directories are created fresh at runtime
+# (mount a volume over them in production)
+public/reports/*
+public/ci-runs/*
+
+# Docs / packages not needed in the image
+README.md
+GITHUB_APP_SETUP.md
+docker-compose.yml
+packages/

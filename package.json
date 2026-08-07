@@ -1,0 +1,39 @@
+{
+  "name": "design-lens",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node $HOME/.config/dev-ports/run.mjs next dev",
+    "dev:next": "node $HOME/.config/dev-ports/run.mjs next dev",
+    "build": "next build",
+    "start": "node $HOME/.config/dev-ports/run.mjs next start",
+    "stop": "node $HOME/.config/dev-ports/stop.mjs",
+    "setup": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "@octokit/app": "^16.1.2",
+    "bullmq": "^5.73.0",
+    "fflate": "^0.8.2",
+    "ioredis": "^5.10.1",
+    "lucide-react": "^0.400.0",
+    "next": "^14.2.0",
+    "pixelmatch": "^5.3.0",
+    "playwright": "^1.44.0",
+    "pngjs": "^7.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@types/pngjs": "^6.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.0",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.4.0"
+  }
+}

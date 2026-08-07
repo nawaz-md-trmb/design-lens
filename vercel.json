@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "npm install && npx playwright install chromium",
+  "functions": {
+    "src/app/api/compare/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/ci/compare/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/browser/session/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/browser/session/[id]/stream/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/figma/frame/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}

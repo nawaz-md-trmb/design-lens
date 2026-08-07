@@ -1,0 +1,72 @@
+name: DesignLens Visual QA
+
+on:
+  workflow_dispatch:
+    inputs:
+      preview_url:
+        description: 'Deployed preview / staging URL to test'
+        required: true
+        type: string
+      figma_url:
+        description: 'Figma frame URL (design reference)'
+        required: true
+        type: string
+      min_match_percent:
+        description: 'Minimum match % to pass (default 85)'
+        required: false
+        default: '85'
+        type: string
+      ticket_id:
+        description: 'Optional Jira/Azure work item ID (e.g. PROJ-123)'
+        required: false
+        type: string
+
+jobs:
+  visual-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run DesignLens compare
+        id: compare
+        env:
+          DESIGNLENS_URL: ${{ secrets.DESIGNLENS_URL }}
+          DESIGNLENS_API_KEY: ${{ secrets.DESIGNLENS_API_KEY }}
+        run: |
+          if [ -z "$DESIGNLENS_URL" ] || [ -z "$DESIGNLENS_API_KEY" ]; then
+            echo "::error::Set DESIGNLENS_URL and DESIGNLENS_API_KEY repository secrets"
+            exit 1
+          fi
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$DESIGNLENS_URL/api/ci/compare" \
+            -H "Authorization: Bearer $DESIGNLENS_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg preview "${{ inputs.preview_url }}" \
+              --arg figma "${{ inputs.figma_url }}" \
+              --arg min "${{ inputs.min_match_percent }}" \
+              --arg ticket "${{ inputs.ticket_id }}" \
+              '{previewUrl: $preview, figmaUrl: $figma, minMatchPercent: ($min | tonumber), viewports: ["desktop"], ticketId: (if $ticket == "" then null else $ticket end)}')")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "$BODY" | jq .
+
+          REPORT_URL=$(echo "$BODY" | jq -r '.reportUrl // empty')
+          PASSED=$(echo "$BODY" | jq -r '.passed // false')
+
+          if [ -n "$REPORT_URL" ]; then
+            echo "report_url=$REPORT_URL" >> "$GITHUB_OUTPUT"
+            echo "### DesignLens Report" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "[$REPORT_URL]($REPORT_URL)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          if [ "$PASSED" != "true" ]; then
+            echo "::error::Visual QA failed — match below threshold"
+            exit 1
+          fi
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::DesignLens API returned HTTP $HTTP_CODE"
+            exit 1
+          fi

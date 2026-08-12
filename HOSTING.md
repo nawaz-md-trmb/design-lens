@@ -6,21 +6,15 @@ Use **Docker** — not Vercel or serverless. DesignLens needs Playwright, long c
 
 ---
 
-## Recommended: Render (GitHub → one click)
+## Recommended: Render (GitHub → Blueprint)
 
-Uses `render.yaml` in this repo.
+Step-by-step: **[RENDER.md](./RENDER.md)**
 
 1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
-2. Connect GitHub → select **`nawaz-md-trmb/design-lens`**
-3. Render creates a Docker web service + **5GB disk** on `/app/public`
-4. **Environment** tab → add secrets from `.env.example` (optional):
-   - `FIGMA_ACCESS_TOKEN`
-   - `DESIGNLENS_API_KEY`
-   - Jira / Azure DevOps vars
-5. Copy your service URL from the dashboard
-6. Verify: `curl https://YOUR-SERVICE.onrender.com/api/health`
+2. Select **`nawaz-md-trmb/design-lens`**
+3. Apply → wait for deploy → open your `onrender.com` URL
 
-Auto-deploys on every push to `main`.
+Uses `render.yaml` (Docker + 5GB disk on `/app/public`). Auto-deploys on push to `main`.
 
 ---
 

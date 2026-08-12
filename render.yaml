@@ -1,16 +1,19 @@
-# Render Blueprint — single Docker web service (no Vercel required).
+# Render Blueprint — DesignLens
 # https://render.com/docs/blueprint-spec
 #
-# Deploy: Render Dashboard → New → Blueprint → connect this repo.
+# Deploy: dashboard.render.com → New → Blueprint → nawaz-md-trmb/design-lens
 
 services:
   - type: web
     name: designlens
     runtime: docker
+    repo: https://github.com/nawaz-md-trmb/design-lens
+    branch: main
     dockerfilePath: ./Dockerfile
     dockerCommand: npm run start
     plan: starter
     healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production

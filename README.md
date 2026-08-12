@@ -16,7 +16,7 @@ Uses **Docker** (Playwright + persistent reports). Not Vercel.
 
 | Platform | Guide |
 |----------|--------|
-| **Render** (recommended) | [HOSTING.md](./HOSTING.md) — connect GitHub, uses `render.yaml` |
+| **Render** (recommended) | [RENDER.md](./RENDER.md) — Blueprint from GitHub |
 | **Docker / VM** | `docker compose up --build` |
 | **Azure** | Same `Dockerfile` — see [HOSTING.md](./HOSTING.md) |
 

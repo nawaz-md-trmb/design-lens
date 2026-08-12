@@ -1,72 +1,105 @@
-# DesignLens hosting
+# DesignLens hosting (free / self-hosted)
 
-Repo: https://github.com/nawaz-md-trmb/design-lens
-
-Use **Docker** — not Vercel or serverless. DesignLens needs Playwright, long compares, and disk for report images.
+Render, Railway, and similar platforms charge for **Docker + persistent disk + Playwright** — DesignLens needs all three. The free path is to **run it yourself** (your Mac, a company VM, or any server with Docker).
 
 ---
 
-## Recommended: Render (GitHub → Blueprint)
+## Option 1: Local dev (free, fastest)
 
-Step-by-step: **[RENDER.md](./RENDER.md)**
+Best for day-to-day use on your machine:
 
-1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
-2. Select **`nawaz-md-trmb/design-lens`**
-3. Apply → wait for deploy → open your `onrender.com` URL
+```bash
+cd design-lens
+npm install
+npm run setup          # Playwright Chromium (once)
+npm run dev            # http://localhost:3100
+```
 
-Uses `render.yaml` (Docker + 5GB disk on `/app/public`). Auto-deploys on push to `main`.
+Reports save to `public/reports/` on your disk — they persist between runs.
 
 ---
 
-## Local or internal server (Docker)
+## Option 2: Docker on your machine (free, production-like)
 
-No external host — runs on your machine or company VM:
+Same as a server deploy, but runs locally:
 
 ```bash
 docker compose up --build
-# → http://localhost:3000
 ```
 
-Production on a server:
+Open **http://localhost:3000**
+
+Reports persist in the Docker volume `report-data`.
+
+Stop: `docker compose down`  
+Start again: `docker compose up` (data kept in volume)
+
+---
+
+## Option 3: Company VM or any Linux server (free if you have the box)
+
+If Trimble (or your team) gives you a small VM:
 
 ```bash
-docker build -t design-lens .
-docker run -d -p 3000:3000 \
-  -v designlens-data:/app/public \
-  --name design-lens \
-  --restart unless-stopped \
-  design-lens
+git clone https://github.com/nawaz-md-trmb/design-lens.git
+cd design-lens
+docker compose up --build -d
 ```
 
-Health: `curl http://localhost:3000/api/health`
+Share with teammates via the VM’s internal URL, e.g. `http://your-vm.internal:3000`
+
+For HTTPS or external access, put **nginx** or your company ingress in front — ask IT.
 
 ---
 
-## Azure (Trimble / enterprise)
+## Option 4: Run on your Mac and share with the team (free)
 
-Same `Dockerfile` on **Azure Container Apps** or **App Service (Linux container)**:
+Keep DesignLens running on your machine:
 
-1. Build image → push to Azure Container Registry
-2. Deploy container with port **3000**
-3. Mount Azure Files at **`/app/public`** for report persistence
-4. Health probe: **`/api/health`**
-5. Env vars from `.env.example`
+```bash
+docker compose up --build
+```
 
----
+Share access via:
 
-## Why not Vercel?
-
-Blocked or unsuitable for this app — serverless timeouts, no sticky browser sessions, ephemeral disk.
+- **Same office network** — others use `http://YOUR-MAC-IP:3000`
+- **Tailscale / company VPN** — if your org uses it
+- **Do not use ngrok/public tunnels** for staging URLs with real product data unless IT approves
 
 ---
 
-## Environment variables
+## What we do NOT recommend (paid or blocked)
 
-| Variable | Purpose |
-|----------|---------|
-| `FIGMA_ACCESS_TOKEN` | Import frames from Figma URLs |
-| `DESIGNLENS_API_KEY` | CI compare API (`/api/ci/compare`) |
-| `JIRA_*` | Attach reports to Jira tickets |
-| `ADO_*` | Attach reports to Azure DevOps work items |
+| Platform | Why skip |
+|----------|----------|
+| **Vercel** | Blocked at your org; bad fit for Playwright |
+| **Render** | Persistent disk + Docker = paid plan |
+| **Railway** | Paid for production Docker workloads |
 
-See `.env.example` for the full list.
+---
+
+## Environment variables (optional)
+
+Copy `.env.example` → `.env.local` for local dev, or set in `docker-compose.yml`:
+
+- `FIGMA_ACCESS_TOKEN` — Figma import
+- `DESIGNLENS_API_KEY` — CI API
+- Jira / Azure DevOps — ticket attach
+
+---
+
+## Azure (if Trimble provides it)
+
+If your org uses Azure internally (not a personal subscription), the same `Dockerfile` runs on **Container Apps** or **App Service** with a file share at `/app/public`. That’s an internal IT request, not a personal paid SaaS.
+
+---
+
+## Quick comparison
+
+| Method | Cost | Reports persist | Share with team |
+|--------|------|-----------------|-----------------|
+| `npm run dev` | Free | Yes (local folder) | No (localhost only) |
+| `docker compose` | Free | Yes (volume) | Same network / VPN |
+| Company VM | Free* | Yes | Yes (internal URL) |
+
+\*If your org already provides the server.

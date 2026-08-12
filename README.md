@@ -10,17 +10,19 @@ npm run setup          # Playwright Chromium
 npm run dev            # http://localhost:3100
 ```
 
-## Deploy (production)
+## Run DesignLens (free)
 
-Uses **Docker** (Playwright + persistent reports). Not Vercel.
+No paid cloud required — runs on your machine or a company VM:
 
-| Platform | Guide |
-|----------|--------|
-| **Render** (recommended) | [RENDER.md](./RENDER.md) — Blueprint from GitHub |
-| **Docker / VM** | `docker compose up --build` |
-| **Azure** | Same `Dockerfile` — see [HOSTING.md](./HOSTING.md) |
+```bash
+npm install && npm run setup && npm run dev   # http://localhost:3100
+# or
+docker compose up --build                     # http://localhost:3000
+```
 
-See **[HOSTING.md](./HOSTING.md)** for Render blueprint setup.
+See **[HOSTING.md](./HOSTING.md)** for sharing with your team on an internal server.
+
+Paid hosts (Render, Railway) are **not required** and need paid plans for Docker + disk.
 
 ## How It Works
 

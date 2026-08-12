@@ -1,95 +1,68 @@
-# DesignLens hosting (Vercel not required)
+# DesignLens hosting
 
-## Recommended: Railway
+Repo: https://github.com/nawaz-md-trmb/design-lens
 
-Best fit for Playwright screenshots, live browser preview, and persistent reports.
-
-### Deploy in ~5 minutes
-
-1. **Push to GitHub**:
-
-   ```bash
-   # Personal GitHub
-   ./scripts/publish-github.sh
-
-   # Or Trimble / company org (create empty repo on GitHub first)
-   ./scripts/publish-github.sh trimble
-
-   # GitHub Enterprise (e.g. Trimble internal)
-   GITHUB_HOST=github.trimble.com ./scripts/publish-github.sh YOUR_ORG
-   ```
-
-   Manual alternative:
-
-   ```bash
-   git remote add origin https://github.com/YOUR_ORG/design-lens.git
-   git push -u origin main
-   ```
-
-2. **Railway** → [railway.app/new](https://railway.app/new) → **Deploy from GitHub repo** → select `design-lens`
-
-3. Railway reads `Dockerfile` + `railway.toml` automatically.
-
-4. **Add a volume** (Settings → Volumes):
-   - Mount path: `/app/public`
-   - Keeps report images across restarts
-
-5. **Environment variables** (optional — see `.env.example`):
-   - `FIGMA_ACCESS_TOKEN`
-   - `DESIGNLENS_API_KEY`
-   - Jira / Azure DevOps vars for ticket attach
-
-6. **Generate domain**: Settings → Networking → Generate domain
-
-7. **Verify**: `curl https://YOUR-DOMAIN.up.railway.app/api/health`
+Use **Docker** — not Vercel or serverless. DesignLens needs Playwright, long compares, and disk for report images.
 
 ---
 
-## Alternative: Render
+## Recommended: Render (GitHub → one click)
 
 Uses `render.yaml` in this repo.
 
-1. [render.com](https://render.com) → **New** → **Blueprint**
-2. Connect GitHub repo
-3. Render creates the web service + 5GB disk on `/app/public`
-4. Add secrets in the dashboard (`FIGMA_ACCESS_TOKEN`, etc.)
+1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
+2. Connect GitHub → select **`nawaz-md-trmb/design-lens`**
+3. Render creates a Docker web service + **5GB disk** on `/app/public`
+4. **Environment** tab → add secrets from `.env.example` (optional):
+   - `FIGMA_ACCESS_TOKEN`
+   - `DESIGNLENS_API_KEY`
+   - Jira / Azure DevOps vars
+5. Copy your service URL from the dashboard
+6. Verify: `curl https://YOUR-SERVICE.onrender.com/api/health`
+
+Auto-deploys on every push to `main`.
 
 ---
 
-## Local / internal server (Docker)
+## Local or internal server (Docker)
 
-No third-party hosting — runs entirely on your network:
+No external host — runs on your machine or company VM:
 
 ```bash
 docker compose up --build
 # → http://localhost:3000
 ```
 
-Reports persist in the `report-data` Docker volume.
-
-For production on a VM:
+Production on a server:
 
 ```bash
 docker build -t design-lens .
-docker run -d -p 3000:3000 -v designlens-data:/app/public --name design-lens design-lens
+docker run -d -p 3000:3000 \
+  -v designlens-data:/app/public \
+  --name design-lens \
+  --restart unless-stopped \
+  design-lens
 ```
 
----
-
-## Why not Vercel?
-
-DesignLens needs a **long-running Chromium process**, **multi-minute compares**, and **disk for report images**. Serverless platforms (Vercel, Netlify Functions) are a poor fit. Docker hosts (Railway, Render, Azure Container Apps, internal K8s) are the right model.
+Health: `curl http://localhost:3000/api/health`
 
 ---
 
 ## Azure (Trimble / enterprise)
 
-Same `Dockerfile` works on **Azure Container Apps** or **App Service (Linux container)**:
+Same `Dockerfile` on **Azure Container Apps** or **App Service (Linux container)**:
 
-- Image: build from `Dockerfile` or GitHub Actions → ACR
-- Mount Azure Files at `/app/public` for report persistence
-- Set env vars from `.env.example`
-- Health probe: `/api/health`
+1. Build image → push to Azure Container Registry
+2. Deploy container with port **3000**
+3. Mount Azure Files at **`/app/public`** for report persistence
+4. Health probe: **`/api/health`**
+5. Env vars from `.env.example`
+
+---
+
+## Why not Vercel?
+
+Blocked or unsuitable for this app — serverless timeouts, no sticky browser sessions, ephemeral disk.
 
 ---
 
@@ -102,4 +75,4 @@ Same `Dockerfile` works on **Azure Container Apps** or **App Service (Linux cont
 | `JIRA_*` | Attach reports to Jira tickets |
 | `ADO_*` | Attach reports to Azure DevOps work items |
 
-See `.env.example` for full list.
+See `.env.example` for the full list.

@@ -12,15 +12,15 @@ npm run dev            # http://localhost:3100
 
 ## Deploy (production)
 
-**Do not use Vercel** for this app — it needs Docker + Playwright.
+Uses **Docker** (Playwright + persistent reports). Not Vercel.
 
 | Platform | Guide |
 |----------|--------|
-| **Railway** (recommended) | [HOSTING.md](./HOSTING.md) |
-| **Render** | `render.yaml` in repo |
+| **Render** (recommended) | [HOSTING.md](./HOSTING.md) — connect GitHub, uses `render.yaml` |
 | **Docker / VM** | `docker compose up --build` |
+| **Azure** | Same `Dockerfile` — see [HOSTING.md](./HOSTING.md) |
 
-See **[HOSTING.md](./HOSTING.md)** for step-by-step Railway and Render setup.
+See **[HOSTING.md](./HOSTING.md)** for Render blueprint setup.
 
 ## How It Works
 

@@ -1,6 +1,9 @@
 # Deploying DesignLens
 
-## Recommended: Railway (3 services — web + worker + Redis)
+> **Current guide:** see **[HOSTING.md](./HOSTING.md)** for Render (recommended) and Docker deploy.
+> The Railway sections below are legacy and not recommended.
+
+## Legacy: Railway (3 services — web + worker + Redis)
 
 Railway is the easiest host for this architecture because it natively supports
 multiple services from the same repo, has a managed Redis plugin, and handles

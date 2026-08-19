@@ -9,13 +9,20 @@ export const VIEWPORTS: Viewport[] = [
   { name: 'Android (Pixel 7)', slug: 'pixel-7', width: 412, height: 915, category: 'mobile' },
 ];
 
+/** Human-readable snapshot label for reports (responsive-friendly — width, not raw W×H). */
+function snapshotLabel(width: number, category: Viewport['category']): string {
+  const band =
+    category === 'mobile' ? 'Mobile' : category === 'tablet' ? 'Tablet' : 'Desktop';
+  return `${band} snapshot (${width}px wide)`;
+}
+
 /** Build a capture viewport that matches the uploaded design dimensions exactly. */
 export function viewportFromDesign(width: number, height: number): Viewport {
   const category: Viewport['category'] =
     width < 500 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop';
 
   return {
-    name: `Design size (${width}×${height})`,
+    name: snapshotLabel(width, category),
     slug: `design-${width}x${height}`,
     width,
     height,

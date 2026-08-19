@@ -132,7 +132,7 @@ export async function analyzeRegionFixes(
       suggestions.push({
         category: 'position',
         title: 'Element position offset',
-        detail: `Content in this area is shifted by ${dx}px horizontally and ${dy}px vertically vs the design.`,
+        detail: `In this snapshot, content is shifted by ${dx}px horizontally and ${dy}px vertically vs the design.`,
         action:
           dx !== 0 && dy !== 0
             ? `Move element ${dx > 0 ? 'right' : 'left'} ${Math.abs(dx)}px and ${dy > 0 ? 'down' : 'up'} ${Math.abs(dy)}px to match design.`
@@ -146,11 +146,20 @@ export async function analyzeRegionFixes(
     const dwDiff = aBox.w - dBox.w;
     const dhDiff = aBox.h - dBox.h;
     if (Math.abs(dwDiff) >= 4 || Math.abs(dhDiff) >= 4) {
+      const larger =
+        Math.abs(dwDiff) >= Math.abs(dhDiff)
+          ? dwDiff > 0
+            ? 'wider'
+            : 'narrower'
+          : dhDiff > 0
+            ? 'taller'
+            : 'shorter';
       suggestions.push({
         category: 'size',
-        title: 'Element size mismatch',
-        detail: `Built element is ${aBox.w}×${aBox.h}px vs design ${dBox.w}×${dBox.h}px.`,
-        action: `Set width to ${dBox.w}px and height to ${dBox.h}px (design: ${dBox.w}×${dBox.h}, build: ${aBox.w}×${aBox.h}).`,
+        title: 'Size differs from design',
+        detail: `In this snapshot the built element appears ${larger} than the design (design ~${dBox.w}×${dBox.h}px visible area vs build ~${aBox.w}×${aBox.h}px).`,
+        action:
+          'Check padding, min-width, flex basis, grid track sizing, and font-size tokens — responsive layouts may need container or breakpoint rules, not fixed px from the mockup.',
         priority: Math.abs(dwDiff) > 12 || Math.abs(dhDiff) > 12 ? 'high' : 'medium',
       });
     }

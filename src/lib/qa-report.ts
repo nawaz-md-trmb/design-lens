@@ -168,7 +168,7 @@ export function buildQaReport(report: Report): QaReportSummary {
   let overallSummary: string;
   if (overallVerdict === 'pass') {
     overallSummary =
-      'The build matches the approved design across all tested screen sizes. Safe to mark visual QA as passed.';
+      'The build matches the approved design for this snapshot. Safe to mark visual QA as passed.';
   } else if (overallVerdict === 'fail') {
     overallSummary = `Visual QA failed. ${bugs.length} issue(s) found — dev must fix before this story can pass QA.`;
   } else {
@@ -177,9 +177,7 @@ export function buildQaReport(report: Report): QaReportSummary {
 
   const qaChecklist = [
     `Open the build: ${report.url}`,
-    ...report.results.map(
-      (r) => `Check ${r.viewport.name} (${r.viewport.width}×${r.viewport.height}) against the design`,
-    ),
+    ...report.results.map((r) => `Review the ${r.viewport.name} against your design mockup`),
     ...(bugs.length > 0
       ? bugs.map((b, i) => `Verify bug #${i + 1} is fixed: ${b.title}`)
       : ['Confirm the screen matches the design mockup — no visual bugs']),

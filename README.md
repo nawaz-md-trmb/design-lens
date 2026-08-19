@@ -26,34 +26,27 @@ Paid hosts (Render, Railway) are **not required** and need paid plans for Docker
 
 ## How It Works
 
-1. **Upload** a design mockup (PNG, JPG, WebP)
-2. **Enter** your staging/preview URL
-3. **Select** viewports to test (Desktop, iPad, iPhone, etc.)
-4. **Compare** — the tool captures screenshots via Playwright, runs pixel-level diffing, and produces an annotated report
+1. **Upload** a design mockup (PNG, JPG, WebP) — the comparison width follows your design
+2. **Enter** your staging/preview URL and open a live browser session
+3. **Compare** — capture the build at your design's width and diff it against the mockup
+4. **Review** — component-level issues, pixel diffs, overlays, and a shareable QA report
 
 ## Report Features
 
 - **Side by Side** — design and implementation next to each other
 - **Overlay Slider** — drag to reveal design vs implementation
 - **Diff Heatmap** — pixel differences highlighted with region annotations
-- **Match Score** — per-viewport percentage showing how close the implementation is to the design
+- **Match Score** — percentage showing how close this snapshot is to the design
 - **Issue Regions** — grid-based detection of areas with significant visual differences
 
 ## Tech Stack
 
 - **Next.js 14** (App Router)
-- **Playwright** — headless browser screenshots at any viewport
+- **Playwright** — headless browser capture at your design's width
 - **pixelmatch** — perceptual pixel comparison
 - **sharp** — image resizing and normalization
 - **Tailwind CSS** — UI styling
 
-## Supported Viewports
+## Comparison frame
 
-| Device | Resolution |
-|--------|-----------|
-| Desktop | 1440 x 900 |
-| Laptop | 1280 x 800 |
-| iPad Landscape | 1194 x 834 |
-| iPad Portrait | 834 x 1194 |
-| iPhone 15 Pro | 393 x 852 |
-| Android (Pixel 7) | 412 x 915 |
+Upload sets the snapshot width automatically (e.g. a 1600px-wide export → 1600px-wide capture). DesignLens labels snapshots as **Desktop**, **Tablet**, or **Mobile** based on width. For CI with fixed breakpoints, see `VIEWPORTS` in [`src/lib/viewports.ts`](src/lib/viewports.ts).

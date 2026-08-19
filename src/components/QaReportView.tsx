@@ -12,7 +12,6 @@ import {
   Copy,
   Check,
   MapPin,
-  AlertTriangle,
 } from 'lucide-react';
 import type { Report } from '@/lib/types';
 import { buildQaReport, priorityLabel, type QaVerdict, type QaBug } from '@/lib/qa-report';
@@ -340,37 +339,6 @@ export default function QaReportView({ report, activeViewport, onViewportChange 
           })}
         </div>
       </div>
-
-      {/* Alignment warning */}
-      {currentResult?.designAlignment?.warnings &&
-        currentResult.designAlignment.warnings.length > 0 && (
-          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 flex gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold text-amber-900 text-sm">
-                Design and screenshot may not be perfectly aligned
-              </p>
-              <p className="text-sm text-amber-800 mt-1">
-                Your design was {currentResult.designAlignment.originalWidth}×
-                {currentResult.designAlignment.originalHeight}px but the capture is{' '}
-                {currentResult.designAlignment.viewportWidth}×
-                {currentResult.designAlignment.viewportHeight}px. Thumbnails compare the same
-                screen coordinates, but mismatched export sizes can make crops look unrelated.
-              </p>
-              <ul className="mt-2 space-y-1">
-                {currentResult.designAlignment.warnings.map((w, i) => (
-                  <li key={i} className="text-xs text-amber-800">
-                    • {w}
-                  </li>
-                ))}
-              </ul>
-              <p className="text-xs text-amber-700 mt-2 font-medium">
-                Tip: Export your Figma frame at exactly {currentResult.viewport.width}×
-                {currentResult.viewport.height}px (1×, not 2×) for accurate comparisons.
-              </p>
-            </div>
-          </div>
-        )}
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* QA checklist */}

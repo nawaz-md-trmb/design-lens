@@ -9,7 +9,7 @@ import {
   destroySession,
 } from '@/lib/browser-session';
 import { compareImages, generateAnnotatedImage, generateCropThumbnails } from '@/lib/diff';
-import { readDesignDimensions } from '@/lib/align-design';
+import { readDesignDimensions, alignDesignToViewport } from '@/lib/align-design';
 import { analyzeLayoutZones } from '@/lib/layout-zones';
 import { analyzeRegionFixes } from '@/lib/fix-suggestions';
 import { viewportFromDesign } from '@/lib/viewports';
@@ -61,7 +61,7 @@ export async function runComparison(
 
     await copyFile(designOriginalPath, designPath);
 
-    // Capture the build at the exact same dimensions as the uploaded design.
+    // Capture the build at the same width as the uploaded design snapshot.
     if (sessionId && getSession(sessionId)) {
       await sessionScreenshotToFile(
         sessionId,
@@ -72,6 +72,12 @@ export async function runComparison(
     } else {
       await captureScreenshot(compareUrl, viewport, actualPath);
     }
+
+    const designAlignment = await alignDesignToViewport(
+      designPath,
+      viewport.width,
+      viewport.height,
+    );
 
     const diffResult = await compareImages(designPath, actualPath, diffPath);
 
@@ -145,12 +151,12 @@ export async function runComparison(
         diffImage: `diff-${slug}.png`,
         annotatedImage: `annotated-${slug}.png`,
         designAlignment: {
-          originalWidth: designDimensions.width,
-          originalHeight: designDimensions.height,
-          viewportWidth: viewport.width,
-          viewportHeight: viewport.height,
-          scale: 1,
-          method: 'exact',
+          originalWidth: designAlignment.originalWidth,
+          originalHeight: designAlignment.originalHeight,
+          viewportWidth: designAlignment.viewportWidth,
+          viewportHeight: designAlignment.viewportHeight,
+          scale: designAlignment.scale,
+          method: designAlignment.method,
           warnings: [],
         },
         layoutZones,

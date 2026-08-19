@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node $HOME/.config/dev-ports/run.mjs next dev",
+    "dev:clean": "node $HOME/.config/dev-ports/stop.mjs 2>/dev/null; rm -rf .next && node $HOME/.config/dev-ports/run.mjs next dev",
     "dev:next": "node $HOME/.config/dev-ports/run.mjs next dev",
     "build": "next build",
     "start": "next start -p ${PORT:-3000}",

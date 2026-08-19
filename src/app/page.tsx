@@ -420,9 +420,7 @@ export default function Home() {
     if (!designFile || !sessionId) return;
     setPhase('comparing');
     setError(null);
-    setLoadingStatus(
-      `Resizing browser to ${designDimensions?.width}×${designDimensions?.height} and comparing…`,
-    );
+    setLoadingStatus('Capturing build and comparing to your design…');
 
     try {
       const formData = new FormData();
@@ -824,26 +822,25 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Capture size — matches uploaded design */}
+                {/* Comparison frame — width follows uploaded design */}
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-3">
-                    Screenshot size
+                    Comparison frame
                   </label>
                   <div className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-4">
                     {designDimensions ? (
                       <>
                         <p className="text-sm font-medium text-indigo-900">
-                          Build captured at {designDimensions.width}×{designDimensions.height}px
+                          Snapshot at {designDimensions.width}px wide
                         </p>
                         <p className="text-xs text-indigo-700 mt-1.5 leading-relaxed">
-                          The live page viewport is resized to match your uploaded design exactly —
-                          no scaling or letterboxing. Scroll the page in the preview so it matches
-                          your mockup before comparing.
+                          The build is captured at the same width as your design. Scroll the live
+                          preview so the visible content matches your mockup before comparing.
                         </p>
                       </>
                     ) : (
                       <p className="text-sm text-indigo-800">
-                        Upload a design to set the capture dimensions automatically.
+                        Upload a design to set the comparison width automatically.
                       </p>
                     )}
                   </div>
@@ -871,7 +868,7 @@ export default function Home() {
             {[
               { step: '1', title: 'Upload Design', desc: 'Drop your Figma export, screenshot, or any mockup image.' },
               { step: '2', title: 'Live session', desc: 'A real Chromium session on the server — click links, scroll, use keyboard, or type a URL.' },
-              { step: '3', title: 'Compare', desc: 'The build is captured at your design\'s exact pixel dimensions — same width, same height, pixel-for-pixel.' },
+              { step: '3', title: 'Compare', desc: 'Capture the build at your design\'s width and diff it against your mockup — one snapshot, side by side.' },
               { step: '4', title: 'Review & Fix', desc: 'Pixel diffs, overlays, annotated regions, and downloadable ZIP.' },
             ].map((item) => (
               <div key={item.step} className="bg-white rounded-xl border border-slate-200 p-6 text-center">

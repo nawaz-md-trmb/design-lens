@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DesignLens — Visual QA for design vs build</title>
+    <meta
+      name="description"
+      content="Compare Figma exports and mockups against live staging builds. Component-level visual QA reports for designers, devs, and QA."
+    />
+    <style>
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+        --accent: #6366f1;
+        --accent-hover: #4f46e5;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        background: radial-gradient(ellipse at top, #1e293b 0%, var(--bg) 55%);
+        color: var(--text);
+        line-height: 1.6;
+      }
+      .wrap {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 3rem 1.25rem 4rem;
+      }
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 1.1rem;
+        margin: 0 0 2rem;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid #334155;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .card h2 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin: 0 0 0.75rem;
+      }
+      .btn {
+        display: inline-block;
+        background: var(--accent);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.65rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .btn:hover {
+        background: var(--accent-hover);
+      }
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid #475569;
+        color: var(--text);
+      }
+      .btn-secondary:hover {
+        border-color: var(--muted);
+        background: #334155;
+      }
+      ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--muted);
+      }
+      li {
+        margin-bottom: 0.35rem;
+      }
+      .note {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+      code {
+        background: #0f172a;
+        padding: 0.15rem 0.4rem;
+        border-radius: 0.25rem;
+        font-size: 0.85em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>DesignLens</h1>
+      <p class="lead">
+        Upload a design mockup, open your staging URL, and get a visual QA report —
+        component-level diffs for designers, devs, and QA.
+      </p>
+
+      <div class="card">
+        <h2>Try the live app</h2>
+        <p>
+          The full tool (compare, live browser, reports) runs on a server — not on this
+          static page.
+        </p>
+        <a class="btn" href="https://danny-forth-pottery-sentence.trycloudflare.com/" rel="noopener">
+          Open live demo
+        </a>
+        <a
+          class="btn btn-secondary"
+          href="https://github.com/nawaz-md-trmb/design-lens"
+          rel="noopener"
+        >
+          View on GitHub
+        </a>
+        <p class="note">
+          If the demo link is blank or offline, the host machine may be asleep — clone the
+          repo and run locally, or ask the owner to restart the tunnel (see
+          <a href="https://github.com/nawaz-md-trmb/design-lens/blob/main/SHARE.md" style="color: #a5b4fc"
+            >SHARE.md</a
+          >).
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Run it yourself</h2>
+        <ul>
+          <li>Clone the repo and run <code>npm install && npm run setup && npm run dev</code></li>
+          <li>Or use Docker: <code>docker compose up --build</code></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

@@ -22,6 +22,8 @@ docker compose up --build                     # http://localhost:3000
 
 See **[HOSTING.md](./HOSTING.md)** for sharing with your team on an internal server.
 
+**Share a live demo URL:** [SHARE.md](./SHARE.md) — free Cloudflare Tunnel while your machine runs the app.
+
 Paid hosts (Render, Railway) are **not required** and need paid plans for Docker + disk.
 
 ## How It Works

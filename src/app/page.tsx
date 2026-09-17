@@ -81,7 +81,7 @@ async function closeSessionApi(id: string) {
 }
 
 export default function Home() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const designUploadInputId = 'design-upload-input';
   const previewWrapperRef = useRef<HTMLDivElement>(null);
   const previewImgRef = useRef<HTMLImageElement>(null);
 
@@ -726,8 +726,7 @@ export default function Home() {
                   onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
                   onDragLeave={() => setIsDragOver(false)}
                   onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`relative border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 ${
+                  className={`relative border-2 border-dashed rounded-xl transition-all duration-200 ${
                     isDragOver
                       ? 'border-indigo-500 bg-indigo-50'
                       : designPreview
@@ -736,33 +735,53 @@ export default function Home() {
                   }`}
                 >
                   <input
-                    ref={fileInputRef}
+                    id={designUploadInputId}
                     type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+                    accept="image/png,image/jpeg,image/webp,image/*"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleFile(f);
+                      e.target.value = '';
+                    }}
                   />
                   {designPreview && !figmaSourceUrl ? (
                     <div className="p-4">
-                      <img
-                        src={designPreview}
-                        alt="Design preview"
-                        className="w-full rounded-lg max-h-72 object-contain"
-                      />
+                      <label htmlFor={designUploadInputId} className="block cursor-pointer">
+                        <img
+                          src={designPreview}
+                          alt="Design preview"
+                          className="w-full rounded-lg max-h-72 object-contain"
+                        />
+                      </label>
                       <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        <span>{designFile?.name}</span>
-                        <button onClick={clearDesign} className="ml-auto text-slate-400 hover:text-red-500">
+                        <span className="min-w-0 truncate">{designFile?.name}</span>
+                        <label
+                          htmlFor={designUploadInputId}
+                          className="text-indigo-600 hover:text-indigo-700 text-xs font-medium shrink-0 cursor-pointer"
+                        >
+                          Replace
+                        </label>
+                        <button
+                          type="button"
+                          onClick={clearDesign}
+                          aria-label="Remove design"
+                          className="ml-auto text-slate-400 hover:text-red-500"
+                        >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="py-16 px-6 text-center">
+                    <label
+                      htmlFor={designUploadInputId}
+                      className="block py-16 px-6 text-center cursor-pointer"
+                    >
                       <Upload className="w-10 h-10 text-slate-400 mx-auto mb-3" />
                       <p className="text-sm font-medium text-slate-600">Drag & drop your design mockup</p>
-                      <p className="text-xs text-slate-400 mt-1">or click to browse — PNG, JPG, WebP</p>
-                    </div>
+                      <p className="text-xs text-slate-400 mt-1">or tap to browse — PNG, JPG, WebP</p>
+                    </label>
                   )}
                 </div>
                 ) : (
